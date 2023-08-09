@@ -244,7 +244,8 @@ subroutine DDT(n_b, GM, x, y, z, u, v, w, dxdt, dydt, dzdt, dudt, dvdt, dwdt)
     real*8, INTENT(IN) :: GM(n_b), x(n_b), y(n_b), z(n_b), u(n_b), v(n_b), w(n_b)
     real*8, INTENT(OUT) :: dxdt(n_b), dydt(n_b), dzdt(n_b), dudt(n_b), dvdt(n_b), dwdt(n_b)
     integer i,j
-    real*8 r, a
+    real*8 r(n_b), theta(n_b), phi(n_b), a, drdt(n_b), dphidt(n_b), dthetadt(n_b), dOmegadt(n_b)
+    real*8 e_r(3), e_phi(3), e_theta(3)
 
     do i=1,n_b
         dudt(i) = 0.d0
@@ -257,17 +258,57 @@ subroutine DDT(n_b, GM, x, y, z, u, v, w, dxdt, dydt, dzdt, dudt, dvdt, dwdt)
 
             if(i /= j) then
 
-                call distance(r, x(i), x(j), y(i), y(j), z(i), z(j))
+                call distance(r(i), x(i), x(j), y(i), y(j), z(i), z(j))
 
-                a = -GM(j)/r**2.d0
+                a = - GM(j) / r(i)**2.d0
 
-                dudt(i) = dudt(i) + a * ( x(i) - x(j) ) / r
-                dvdt(i) = dvdt(i) + a * ( y(i) - y(j) ) / r
-                dwdt(i) = dwdt(i) + a * ( z(i) - z(j) ) / r
+                dudt(i) = dudt(i) + a * ( x(i) - x(j) ) / r(i)
+                dvdt(i) = dvdt(i) + a * ( y(i) - y(j) ) / r(i)
+                dwdt(i) = dwdt(i) + a * ( z(i) - z(j) ) / r(i)
 
             endif
 
         enddo
+    enddo
+
+    do i=1,n_b
+        if(i==1) then
+            drdt(i) = 0.d0
+            dphidt(i) = 0.d0
+            dthetadt(i) = 0.d0
+        else
+            if(i==11) then
+                j = 4
+            else
+                j = 1
+            endif
+
+            call spherical_coordinates(n_b, r(i), theta(i), phi(i), x(i), y(i), z(i), x(j), y(j), z(j))
+
+            e_r(1) = dcos(phi(i)) * dcos(theta(i))
+            e_r(2) = dsin(phi(i)) * dcos(theta(i))
+            e_r(3) = dsin(theta(i))
+            e_phi(1) = -dsin(phi(i)) 
+            e_phi(2) = dcos(phi(i))
+            e_phi(3) = 0.d0
+            e_theta(1) = -dcos(phi(i)) * dsin(theta(i))
+            e_theta(2) = -dsin(phi(i)) * dsin(theta(i))
+            e_theta(3) = dcos(theta(i))
+
+            drdt(i) = ( u(i) - u(j) ) * e_r(1) + ( v(i) - v(j) ) * e_r(2) + ( w(i) - w(j) ) * e_r(3)
+            dphidt(i) = ( ( u(i) - u(j) ) * e_phi(1) + ( v(i) - v(j) ) * e_phi(2) + ( w(i) - w(j) ) * e_phi(3) ) &
+                        / ( r(i) * dcos(theta(i)) )
+            dthetadt(i) = ( ( u(i) - u(j) ) * e_theta(1) + ( v(i) - v(j) ) * e_theta(2) + ( w(i) - w(j) ) * &
+                        e_theta(3) ) / r(i)
+
+            if(dphidt(i) < 0.d0) then
+                dOmegadt(i) = ( ( dthetadt(i) )**2.d0 + ( dphidt(i) * dcos( theta(i) ) )**2.d0 )**2.d0
+            else
+                dOmegadt(i) = - ( ( dthetadt(i) )**2.d0 + ( dphidt(i) * dcos( theta(i) ) )**2.d0 )**2.d0
+            endif
+
+        endif
+
     enddo
 
     end
