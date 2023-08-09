@@ -72,8 +72,38 @@ Program solar_system
     open(11,file="Solar_orbit.csv")
     write(11,*) '"t [days]","x [km]","y [km]","z [km]","u [km/s]","v [km/s]","w [km/s]"'
 
+    open(12,file="Mercury_orbit.csv")
+    write(12,*) '"t [days]","x [km]","y [km]","z [km]","u [km/s]","v [km/s]","w [km/s]","r [km]","lat [deg]","lon [deg]"'
+
+    open(13,file="Venus_orbit.csv")
+    write(13,*) '"t [days]","x [km]","y [km]","z [km]","u [km/s]","v [km/s]","w [km/s]","r [km]","lat [deg]","lon [deg]"'
+
     open(14,file="Earth_orbit.csv")
     write(14,*) '"t [days]","x [km]","y [km]","z [km]","u [km/s]","v [km/s]","w [km/s]","r [km]","lat [deg]","lon [deg]"'
+
+    open(15,file="Mars_orbit.csv")
+    write(15,*) '"t [days]","x [km]","y [km]","z [km]","u [km/s]","v [km/s]","w [km/s]","r [km]","lat [deg]","lon [deg]"'
+
+    open(16,file="Jupiter_orbit.csv")
+    write(16,*) '"t [days]","x [km]","y [km]","z [km]","u [km/s]","v [km/s]","w [km/s]","r [km]","lat [deg]","lon [deg]"'
+
+    open(17,file="Saturn_orbit.csv")
+    write(17,*) '"t [days]","x [km]","y [km]","z [km]","u [km/s]","v [km/s]","w [km/s]","r [km]","lat [deg]","lon [deg]"'
+
+    open(18,file="Uranus_orbit.csv")
+    write(18,*) '"t [days]","x [km]","y [km]","z [km]","u [km/s]","v [km/s]","w [km/s]","r [km]","lat [deg]","lon [deg]"'
+
+    open(19,file="Neptune_orbit.csv")
+    write(19,*) '"t [days]","x [km]","y [km]","z [km]","u [km/s]","v [km/s]","w [km/s]","r [km]","lat [deg]","lon [deg]"'
+
+    open(20,file="Pluto_orbit.csv")
+    write(20,*) '"t [days]","x [km]","y [km]","z [km]","u [km/s]","v [km/s]","w [km/s]","r [km]","lat [deg]","lon [deg]"'
+
+    open(21,file="Earth_Moon_orbit.csv")
+    write(21,*) '"t [days]","x [km]","y [km]","z [km]","u [km/s]","v [km/s]","w [km/s]","r [km]","lat [deg]","lon [deg]"'
+
+    open(22,file="Ceres_orbit.csv")
+    write(22,*) '"t [days]","x [km]","y [km]","z [km]","u [km/s]","v [km/s]","w [km/s]","r [km]","lat [deg]","lon [deg]"'
 
     do k=1,nt
 
@@ -128,14 +158,54 @@ Program solar_system
         z = z0 + ( dt / 6.d0 )*( dzdt_1 + 2.d0 * dzdt_2 + 2.d0 * dzdt_3 + dzdt_4 )
 
         write(11,101) time * seconds_to_days,',',x(1),',',y(1),',',z(1),',',u(1),',',v(1),',',w(1)
+        call spherical_coordinates(n_b, r, theta, phi, x(2), y(2), z(2), x(1), y(1), z(1))
+        write(12,102) time * seconds_to_days,',',x(2)-x(1),',',y(2)-y(1),',',z(2)-z(1),',',u(2)-u(1),',',v(2)-v(1),',',w(2)-w(1), &
+                        ',',r,',',rad_to_deg * theta,',',rad_to_deg * phi
+        call spherical_coordinates(n_b, r, theta, phi, x(3), y(3), z(3), x(1), y(1), z(1))
+        write(13,102) time * seconds_to_days,',',x(3)-x(1),',',y(3)-y(1),',',z(3)-z(1),',',u(3)-u(1),',',v(3)-v(1),',',w(3)-w(1), &
+                        ',',r,',',rad_to_deg * theta,',',rad_to_deg * phi
         call spherical_coordinates(n_b, r, theta, phi, x(4), y(4), z(4), x(1), y(1), z(1))
         write(14,102) time * seconds_to_days,',',x(4)-x(1),',',y(4)-y(1),',',z(4)-z(1),',',u(4)-u(1),',',v(4)-v(1),',',w(4)-w(1), &
                         ',',r,',',rad_to_deg * theta,',',rad_to_deg * phi
+        call spherical_coordinates(n_b, r, theta, phi, x(5), y(5), z(5), x(1), y(1), z(1))
+        write(15,102) time * seconds_to_days,',',x(5)-x(1),',',y(5)-y(1),',',z(5)-z(1),',',u(5)-u(1),',',v(5)-v(1),',',w(5)-w(1), &
+                        ',',r,',',rad_to_deg * theta,',',rad_to_deg * phi
+        call spherical_coordinates(n_b, r, theta, phi, x(6), y(6), z(6), x(1), y(1), z(1))
+        write(16,102) time * seconds_to_days,',',x(6)-x(1),',',y(6)-y(1),',',z(6)-z(1),',',u(6)-u(1),',',v(6)-v(1),',',w(6)-w(1), &
+                        ',',r,',',rad_to_deg * theta,',',rad_to_deg * phi
+        call spherical_coordinates(n_b, r, theta, phi, x(7), y(7), z(7), x(1), y(1), z(1))
+        write(17,102) time * seconds_to_days,',',x(7)-x(1),',',y(7)-y(1),',',z(7)-z(1),',',u(7)-u(1),',',v(7)-v(1),',',w(7)-w(1), &
+                        ',',r,',',rad_to_deg * theta,',',rad_to_deg * phi
+        call spherical_coordinates(n_b, r, theta, phi, x(8), y(8), z(8), x(1), y(1), z(1))
+        write(18,102) time * seconds_to_days,',',x(8)-x(1),',',y(8)-y(1),',',z(8)-z(1),',',u(8)-u(1),',',v(8)-v(1),',',w(8)-w(1), &
+                        ',',r,',',rad_to_deg * theta,',',rad_to_deg * phi
+        call spherical_coordinates(n_b, r, theta, phi, x(9), y(9), z(9), x(1), y(1), z(1))
+        write(19,102) time * seconds_to_days,',',x(9)-x(1),',',y(9)-y(1),',',z(9)-z(1),',',u(9)-u(1),',',v(9)-v(1),',',w(9)-w(1), &
+                        ',',r,',',rad_to_deg * theta,',',rad_to_deg * phi
+        call spherical_coordinates(n_b, r, theta, phi, x(10), y(10), z(10), x(1), y(1), z(1))
+        write(20,102) time * seconds_to_days,',',x(10)-x(1),',',y(10)-y(1),',',z(10)-z(1),',',u(10)-u(1),',',v(10)-v(1),',', &
+                    w(10)-w(1),',',r,',',rad_to_deg * theta,',',rad_to_deg * phi
+        call spherical_coordinates(n_b, r, theta, phi, x(11), y(11), z(11), x(4), y(4), z(4))
+        write(21,102) time * seconds_to_days,',',x(11)-x(4),',',y(11)-y(4),',',z(11)-z(4),',',u(11)-u(4),',',v(11)-v(4),',', &
+                    w(11)-w(4),',',r,',',rad_to_deg * theta,',',rad_to_deg * phi
+        call spherical_coordinates(n_b, r, theta, phi, x(12), y(12), z(12), x(1), y(1), z(1))
+        write(22,102) time * seconds_to_days,',',x(12)-x(1),',',y(12)-y(1),',',z(12)-z(1),',',u(12)-u(1),',',v(12)-v(1),',', &
+                    w(12)-w(1),',',r,',',rad_to_deg * theta,',',rad_to_deg * phi
 
     enddo
 
     close(11)
+    close(12)
+    close(13)
     close(14)
+    close(15)
+    close(16)
+    close(17)
+    close(18)
+    close(19)
+    close(20)
+    close(21)
+    close(22)
 
     101 format(e18.10,A,e18.10,A,e18.10,A,e18.10,A,e18.10,A,e18.10,A,e18.10)
 
